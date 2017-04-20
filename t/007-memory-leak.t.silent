@@ -1,0 +1,36 @@
+BEGIN {
+    $ENV{TEST_NGINX_CHECK_LEAK} = 1;
+}
+
+use Test::Nginx::Socket 'no_plan';
+
+my $workdir = $ENV{WORKDIR};
+
+open(my $fh, '<:encoding(UTF-8)', "$workdir/benchmarks/hacker_news.html")
+or die "Could not open file google.html";
+
+our $google;
+
+{
+    local $/;
+    $google = <$fh>;
+}
+
+repeat_each(4096);
+no_shuffle();
+run_tests();
+
+__DATA__
+
+=== TEST 1: enable html sanitize config
+--- config
+location /t {
+    client_body_buffer_size 10M;
+    client_max_body_size 10M;
+    html_sanitize on;
+}
+--- request eval
+"POST /t?html=1&element=1&attrbute=1&style_property=1&style_property_value=1
+$::google
+"
+--- error_code: 200

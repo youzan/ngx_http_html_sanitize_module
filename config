@@ -1,0 +1,78 @@
+ngx_addon_name=ngx_http_html_sanitize_module
+ngx_addon_gumbo_deps_dir="$ngx_addon_dir/deps/gumbo-parser"
+ngx_addon_katana_deps_dir="$ngx_addon_dir/deps/katana-parser"
+NGX_HTTP_HTML_SANITIZE_SRCS="                                                  \
+                $ngx_addon_dir/src/ngx_http_html_sanitize_module.c             \
+                $ngx_addon_gumbo_deps_dir/src/attribute.c                      \
+                $ngx_addon_gumbo_deps_dir/src/char_ref.c                       \
+                $ngx_addon_gumbo_deps_dir/src/error.c                          \
+                $ngx_addon_gumbo_deps_dir/src/parser.c                         \
+                $ngx_addon_gumbo_deps_dir/src/string_buffer.c                  \
+                $ngx_addon_gumbo_deps_dir/src/string_piece.c                   \
+                $ngx_addon_gumbo_deps_dir/src/tag.c                            \
+                $ngx_addon_gumbo_deps_dir/src/tokenizer.c                      \
+                $ngx_addon_gumbo_deps_dir/src/utf8.c                           \
+                $ngx_addon_gumbo_deps_dir/src/util.c                           \
+                $ngx_addon_gumbo_deps_dir/src/vector.c                         \
+                $ngx_addon_katana_deps_dir/src/katana_foundation.c             \
+                $ngx_addon_katana_deps_dir/src/katana.lex.c                    \
+                $ngx_addon_katana_deps_dir/src/katana.tab.c                    \
+                $ngx_addon_katana_deps_dir/src/katana_parser.c                 \
+                $ngx_addon_katana_deps_dir/src/katana_selector.c               \
+                $ngx_addon_katana_deps_dir/src/katana_tokenizer.c              \
+                "
+
+NGX_HTTP_HTML_SANITIZE_DEPS="                                                  \
+                $ngx_addon_dir/src/ddebug.h                                    \
+                $ngx_addon_dir/src/ngx_http_html_sanitize_module.h             \
+                $ngx_addon_gumbo_deps_dir/src/attribute.h                      \
+                $ngx_addon_gumbo_deps_dir/src/char_ref.h                       \
+                $ngx_addon_gumbo_deps_dir/src/error.h                          \
+                $ngx_addon_gumbo_deps_dir/src/gumbo.h                          \
+                $ngx_addon_gumbo_deps_dir/src/insertion_mode.h                 \
+                $ngx_addon_gumbo_deps_dir/src/parser.h                         \
+                $ngx_addon_gumbo_deps_dir/src/string_buffer.h                  \
+                $ngx_addon_gumbo_deps_dir/src/string_piece.h                   \
+                $ngx_addon_gumbo_deps_dir/src/tag_enum.h                       \
+                $ngx_addon_gumbo_deps_dir/src/tag_gperf.h                      \
+                $ngx_addon_gumbo_deps_dir/src/tag_sizes.h                      \
+                $ngx_addon_gumbo_deps_dir/src/tag_strings.h                    \
+                $ngx_addon_gumbo_deps_dir/src/token_type.h                     \
+                $ngx_addon_gumbo_deps_dir/src/tokenizer.h                      \
+                $ngx_addon_gumbo_deps_dir/src/tokenizer_states.h               \
+                $ngx_addon_gumbo_deps_dir/src/utf8.h                           \
+                $ngx_addon_gumbo_deps_dir/src/util.h                           \
+                $ngx_addon_gumbo_deps_dir/src/vector.h                         \
+                $ngx_addon_katana_deps_dir/src/katana_foundation.h             \
+                $ngx_addon_katana_deps_dir/src/katana.h                        \
+                $ngx_addon_katana_deps_dir/src/katana.lex.h                    \
+                $ngx_addon_katana_deps_dir/src/katana.tab.h                    \
+                $ngx_addon_katana_deps_dir/src/katana_parser.h                 \
+                $ngx_addon_katana_deps_dir/src/katana_selector.h               \
+                $ngx_addon_katana_deps_dir/src/katana_tokenizer.h              \
+                "
+
+NGX_HTTP_HTML_SANITIZE_INCS="                                                  \
+                             $ngx_addon_dir/deps/gumbo-parser/src              \
+                             $ngx_addon_dir/deps/katana-parser/src             \
+                             "
+
+if test -n "$ngx_module_link"; then
+    ngx_module_type=HTTP
+    ngx_module_name=$ngx_addon_name
+    ngx_module_incs="$NGX_HTTP_HTML_SANITIZE_INCS"
+    ngx_module_deps="$NGX_HTTP_HTML_SANITIZE_DEPS"
+    ngx_module_srcs="$NGX_HTTP_HTML_SANITIZE_SRCS"
+
+    CFLAGS="$CFLAGS -std=gnu99 -g -O2 -fno-omit-frame-pointer"
+
+    . auto/module
+
+else
+    HTTP_MODULES="$HTTP_MODULES $ngx_addon_name"
+    NGX_ADDON_SRCS="$NGX_HTTP_HTML_SANITIZE_SRCS"
+    NGX_ADDON_DEPS="$NGX_HTTP_HTML_SANITIZE_DPES"
+    CORE_INCS="$CORE_INCS $NGX_HTTP_HTML_SANITIZE_INCS"
+
+    CFLAGS="$CFLAGS -std=gnu99 -g -O2 -fno-omit-frame-pointer"
+fi
