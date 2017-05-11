@@ -4,6 +4,7 @@
 [hackers-painters/katana-parser]: https://github.com/hackers-painters/katana-parser
 [nginx]: https://nginx.org/
 [license]: /license
+[expression]: https://msdn.microsoft.com/en-us/library/ms537634(v=vs.85).aspx
 [ngx_http_html_sanitize_module]: https://github.com/youzan/ngx_http_html_sanitize_module
 [url]: https://developer.mozilla.org/en-US/docs/Web/CSS/url
 [linkable_attribute]: #linkable_attribute
@@ -166,7 +167,7 @@ This querystring `element=2&attribute=1&style_property=1&style_property_value=1&
 * element=2: output whitelisted element by [html_sanitize_element]
 * attribute=1: output any attribute by [html_sanitize_attribute]
 * style_property=1: output any style property by [html_sanitize_style_property]
-* style_property_value=1: check the style value for [url] function and expression function to avoid XSS inject by  [style_property_value]
+* style_property_value=1: check the style value for [url] function and [expression] function to avoid XSS inject by  [style_property_value]
 * url_protocol=1: check whitelisted url_protocol for absoluted URL by [html_sanitize_url_protocol]
 * url_domain=0: do not check url domain for absoluted URL
 * iframe_url_protocol=1: is the same as [url_protocol] but only for `iframe.src` by [html_sanitize_iframe_url_protocol]
@@ -403,7 +404,7 @@ html_sanitize_url_protocol
 
 **context:** location
 
-Set the allowed URL protocol at [linkable attribute](#linkable_attribute) when only the URL is absoluted rahter than related and enable URL protocol check by setting the querystring [url_protocol][#url_protocol] check mode as the following:
+Set the allowed URL protocol at [linkable attribute](#linkable_attribute) when only the URL is absoluted rahter than related and enable URL protocol check by setting the querystring [url_protocol] check mode as the following:
 
 ```nginx
 html_sanitize_url_protocol http https tel;
@@ -418,7 +419,7 @@ html_sanitize_url_domain
 
 **context:** location
 
-Set the allowed URL domain at [linkable attribute](#linkable_attribute) when only the URL is absoluted rahter than relatived and enable URL protocol check、URL domain check by setting the querystring [url_protocol][#url_protocol] check mode and the querystring [url_domain][#url_domain] check mode as the following:
+Set the allowed URL domain at [linkable attribute](#linkable_attribute) when only the URL is absoluted rahter than relatived and enable URL protocol check、URL domain check by setting the querystring [url_protocol] check mode and the querystring [url_domain][#url_domain] check mode as the following:
 
 ```nginx
 html_sanitize_url_domain *.google.com google.com;
