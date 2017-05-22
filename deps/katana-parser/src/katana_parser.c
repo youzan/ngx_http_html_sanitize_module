@@ -89,6 +89,7 @@ static KatanaOutput* katana_parse_fragment(const char* prefix,
 
 static const char* katana_stringify_value_list(KatanaParser* parser, KatanaArray* value_list);
 static const char* katana_stringify_value(KatanaParser* parser, KatanaValue* value);
+static bool katana_string_contain_space(const char *s);
 
 static void* malloc_wrapper(void* unused, size_t size) {
     return malloc(size);
@@ -1639,7 +1640,7 @@ static const char* katana_stringify_value_list(KatanaParser* parser, KatanaArray
 static const char* katana_stringify_value(KatanaParser* parser, KatanaValue* value)
 {
     // TODO: @(QFish) Handle this more gracefully X).
-    char str[256];
+    char str[256] = {0};
 
     switch (value->unit) {
         case KATANA_VALUE_NUMBER:
@@ -1672,8 +1673,13 @@ static const char* katana_stringify_value(KatanaParser* parser, KatanaValue* val
             break;
         case KATANA_VALUE_STRING:
             // FIXME: @(QFish) Do we need double quote or not ?
-//            snprintf(str, sizeof(str), "\"%s\"", value->string);
-            snprintf(str, sizeof(str), "%s", value->string);
+            // FIXED: @(detailyang) append quote only contain space !
+
+            if (katana_string_contain_space(value->string) == true) {
+                snprintf(str, sizeof(str), "\"%s\"", value->string);
+            } else {
+                snprintf(str, sizeof(str), "%s", value->string);
+            }
             break;
         case KATANA_VALUE_PARSER_FUNCTION:
         {
@@ -1708,4 +1714,16 @@ static const char* katana_stringify_value(KatanaParser* parser, KatanaValue* val
     strcpy(dest, str);
     dest[len] = '\0';
     return dest;
+}
+
+
+static bool katana_string_contain_space(const char *s)
+{
+    for (;*s; s++) {
+        if(isspace(*s)) {
+            return true;
+        }
+    }
+
+    return false;
 }

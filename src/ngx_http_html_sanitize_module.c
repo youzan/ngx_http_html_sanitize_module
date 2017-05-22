@@ -87,6 +87,9 @@ static inline ngx_int_t
 ngx_http_html_sanitize_is_style_expression(const char *name);
 static inline void
 ngx_http_html_sanitize_rtrim(ngx_str_t *value);
+static inline void
+ngx_http_html_sanitize_style_quote_replace(u_char *p, size_t len,
+    const char *quote);
 static inline ngx_int_t
 ngx_http_html_sanitize_url_absolute(const char *url);
 
@@ -123,7 +126,8 @@ ngx_http_html_sanitize_style_declration_visit(ngx_http_request_t *r,
     GumboAttribute *attr, const char *quote, KatanaDeclaration *declaration);
 static ngx_int_t
 ngx_http_html_sanitize_style_declration_property_visit(ngx_http_request_t *r,
-    ngx_http_html_sanitize_chain_t *sc, KatanaDeclaration *declaration);
+    ngx_http_html_sanitize_chain_t *sc, const char *quote,
+    KatanaDeclaration *declaration);
 
 static ngx_int_t
 ngx_http_html_sanitize_get_tag_name(ngx_http_request_t *r, GumboNode *node,
@@ -1565,7 +1569,8 @@ ngx_http_html_sanitize_root_visit(ngx_http_request_t *r,
 
 static ngx_int_t
 ngx_http_html_sanitize_style_declration_property_visit(ngx_http_request_t *r,
-    ngx_http_html_sanitize_chain_t *sc, KatanaDeclaration *declaration)
+    ngx_http_html_sanitize_chain_t *sc, const char *quote,
+    KatanaDeclaration *declaration)
 {
     size_t       len;
     u_char      *p, *last;
@@ -1605,6 +1610,8 @@ ngx_http_html_sanitize_style_declration_property_visit(ngx_http_request_t *r,
                             declaration->property,
                             declaration->raw);
     }
+
+    ngx_http_html_sanitize_style_quote_replace(p, (last - p), quote);
 
     buf = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
     if (buf == NULL) {
@@ -1666,8 +1673,9 @@ ngx_http_html_sanitize_style_declration_visit(ngx_http_request_t *r,
     }
 
     if (ctx->style_property_value == 0) {
-        return ngx_http_html_sanitize_style_declration_property_visit(r, sc,
-                            declaration);
+        rc = ngx_http_html_sanitize_style_declration_property_visit(r, sc, quote,
+                                                                    declaration);
+        return rc;
     }
 
     values = declaration->values;
@@ -1734,6 +1742,7 @@ ngx_http_html_sanitize_style_declration_visit(ngx_http_request_t *r,
     }
 
     return ngx_http_html_sanitize_style_declration_property_visit(r, sc,
+                                                                  quote,
                                                                   declaration);
 }
 
@@ -1802,7 +1811,7 @@ ngx_http_html_sanitize_attribute_visit(ngx_http_request_t *r,
 {
     char                                first;
     u_char                             *p, *value, *last, *find, *ub, *ue;
-    size_t                              attrlen;
+    size_t                              attrlen, valuelen;
     ngx_int_t                           rc, len;
     ngx_uint_t                          k;
     ngx_buf_t                          *buf;
@@ -2030,11 +2039,15 @@ IFRAME_SRC_CHECKED:
             }
         }
 
+        valuelen = strlen((const char *)value);
+
+        ngx_http_html_sanitize_style_quote_replace(value, valuelen, quote);
+
         len = sizeof(" ") - 1
               + strlen(attr->name)
               + sizeof("=") - 1
               + strlen(quote)
-              + strlen((const char *)value)
+              + valuelen
               + strlen(quote);
 
         p = ngx_pcalloc(r->pool, len);
@@ -2603,6 +2616,35 @@ ngx_http_html_sanitize_rtrim(ngx_str_t *value)
     p = value->data + value->len;
     while (*p++ == ' ') {
         value->len --;
+    }
+}
+
+
+static inline void
+ngx_http_html_sanitize_style_quote_replace(u_char *p, size_t len,
+    const char *quote)
+{
+    ngx_uint_t i;
+
+    for (i = 0; i < len; i++) {
+
+        /*
+         * It's trick to replace ' or " to right quote in inline CSS Style
+         */
+
+        switch (p[i]) {
+            case '"':
+                if (quote[0] == '"') {
+                    p[i] = '\'';
+                }
+                break;
+            case '\'':
+                if (quote[0] == '\'') {
+                    p[i] = '\"';
+                }
+
+                break;
+        }
     }
 }
 
