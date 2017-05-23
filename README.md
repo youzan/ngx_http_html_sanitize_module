@@ -90,6 +90,9 @@ server {
     listen 8888;
 
     location = /sanitize {
+        # Explicitly set utf-8 encoding
+        add_header Content-Type "text/html; charset=UTF-8";
+
         client_body_buffer_size 10M;
         client_max_body_size 10M;
 
