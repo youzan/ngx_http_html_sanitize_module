@@ -1,7 +1,7 @@
 use Test::Nginx::Socket; # 'no_plan';
 
 repeat_each(2);
-plan tests => repeat_each() * blocks() * 2;
+plan tests => repeat_each() * (blocks() + 14);
 
 #no_long_string();
 #no_diff;
@@ -94,3 +94,32 @@ location /t {
 <abcd>1234<script>script</script><style>style</style></abcd>
 "
 --- response_body: <abcd>1234</abcd>
+
+
+
+=== TEST 6: unknown tag should be right in utf8
+--- config
+location /t {
+    html_sanitize on;
+}
+--- request eval
+["POST /t?element=1
+<abcd>你好</abcd><defg>世界</defg>
+",
+"POST /t?element=1
+<abcd>你好</abcd><defg>世界</defg>
+",
+"POST /t?element=1
+<abcd>你好</abcd><defg>世界</defg>",
+"POST /t?element=1
+<abcd>你好</abcd><defg>世界</defg>",
+"POST /t?element=1
+<abcd>你好</abcd><defg>世界</defg>",
+]
+--- response_body eval
+["<abcd>你好</abcd><defg>世界</defg>",
+"<abcd>你好</abcd><defg>世界</defg>",
+"<abcd>你好</abcd><defg>世界</defg>",
+"<abcd>你好</abcd><defg>世界</defg>",
+"<abcd>你好</abcd><defg>世界</defg>",
+]
