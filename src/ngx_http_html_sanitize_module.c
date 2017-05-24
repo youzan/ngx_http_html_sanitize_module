@@ -2275,17 +2275,16 @@ ngx_http_html_sanitize_get_tag_name(ngx_http_request_t *r, GumboNode *node,
 {
     GumboStringPiece clone;
 
+    value->data = NULL;
+    value->len = 0;
+
     if (node->type == GUMBO_NODE_DOCUMENT) {
         value->data = (u_char *) "document";
         value->len = sizeof("document") - 1;
 
     } else {
 
-        /*
-         * FIX ME when node->v.element.tag > GUMBO_TAG_LAST
-         */
-
-        if (node->v.element.tag <= GUMBO_TAG_LAST) {
+        if (node->v.element.tag < GUMBO_TAG_UNKNOWN) {
             value->data = (u_char *) gumbo_normalized_tagname(
                                         node->v.element.tag);
             if (value->data != NULL) {
