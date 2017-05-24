@@ -342,3 +342,54 @@ location /t {
 <iframe src=\"https://www.facebook.com\"></iframe>
 "
 --- response_body: <iframe></iframe>
+
+
+
+=== TEST 23: Explicitly enable <script>
+--- config
+location /t {
+    html_sanitize on;
+    html_sanitize_element html head body;
+    html_sanitize_element h1;
+    html_sanitize_element p;
+    html_sanitize_element a;
+}
+--- request eval
+"POST /t?element=1&script=1
+<abcd>1234<script>script</script><style>style</style></abcd>
+"
+--- response_body: <abcd>1234<script>script</script></abcd>
+
+
+
+=== TEST 24: Explicitly enable <style>
+--- config
+location /t {
+    html_sanitize on;
+    html_sanitize_element html head body;
+    html_sanitize_element h1;
+    html_sanitize_element p;
+    html_sanitize_element a;
+}
+--- request eval
+"POST /t?element=1&style=1
+<abcd>1234<script>script</script><style>style</style></abcd>
+"
+--- response_body: <abcd>1234<style>style</style></abcd>
+
+
+
+=== TEST 25: Explicitly enable <script> and <style>
+--- config
+location /t {
+    html_sanitize on;
+    html_sanitize_element html head body;
+    html_sanitize_element h1;
+    html_sanitize_element p;
+    html_sanitize_element a;
+}
+--- request eval
+"POST /t?element=1&style=1&script=1
+<abcd>1234<script>script</script><style>style</style></abcd>
+"
+--- response_body: <abcd>1234<script>script</script><style>style</style></abcd>

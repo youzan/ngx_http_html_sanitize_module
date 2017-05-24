@@ -1218,6 +1218,8 @@ ngx_http_html_sanitize_pasre_args(ngx_http_request_t *r)
     ngx_str_t context = ngx_string("context");
     ngx_str_t document = ngx_string("document");
     ngx_str_t html = ngx_string("html");
+    ngx_str_t script = ngx_string("script");
+    ngx_str_t style = ngx_string("style");
     ngx_str_t element = ngx_string("element");
     ngx_str_t attribute = ngx_string("attribute");
     ngx_str_t url_domain = ngx_string("url_domain");
@@ -1309,6 +1311,34 @@ ngx_http_html_sanitize_pasre_args(ngx_http_request_t *r)
 
         } else {
             ctx->html = 0;
+        }
+    }
+
+    rc = ngx_http_html_sanitize_peek_args(args, &script, &value);
+    if (rc == NGX_ERROR) {
+        ctx->script = 0;
+
+    } else {
+        integer = ngx_atoi(value.data, value.len);
+        if (integer == 0 || integer == 1) {
+            ctx->script = integer;
+
+        } else {
+            ctx->script = 0;
+        }
+    }
+
+    rc = ngx_http_html_sanitize_peek_args(args, &style, &value);
+    if (rc == NGX_ERROR) {
+        ctx->style = 0;
+
+    } else {
+        integer = ngx_atoi(value.data, value.len);
+        if (integer == 0 || integer == 1) {
+            ctx->style = integer;
+
+        } else {
+            ctx->style = 0;
         }
     }
 
@@ -2141,6 +2171,22 @@ ngx_http_html_sanitize_element_visit(ngx_http_request_t *r,
             }
 
         } else {
+            return NGX_OK;
+        }
+    }
+
+    /*
+     * Explicitly disable script and style element
+     */
+
+    if (ctx->script == 0) {
+        if (node->v.element.tag == GUMBO_TAG_SCRIPT) {
+            return NGX_OK;
+        }
+    }
+
+    if (ctx->style == 0) {
+        if (node->v.element.tag == GUMBO_TAG_STYLE) {
             return NGX_OK;
         }
     }

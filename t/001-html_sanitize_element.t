@@ -77,3 +77,20 @@ location /t {
 </table>
 "
 --- response_body: <table><tbody><tr><th>Month</th><th>Savings</th></tr><tr></tr></tbody></table>
+
+
+
+=== TEST 5: Explicitly disable <script> and <style>
+--- config
+location /t {
+    html_sanitize on;
+    html_sanitize_element html head body;
+    html_sanitize_element h1;
+    html_sanitize_element p;
+    html_sanitize_element a;
+}
+--- request eval
+"POST /t?element=1
+<abcd>1234<script>script</script><style>style</style></abcd>
+"
+--- response_body: <abcd>1234</abcd>

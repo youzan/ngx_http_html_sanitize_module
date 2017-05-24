@@ -495,6 +495,27 @@ html
 
 Specifies whether append `<html></html>` to response body
 
+
+script
+--------
+**value:** *0 or 1*
+
+**default:** *0*
+
+**context:** querystring
+
+Specifies whether allow `<script></script>`
+
+style
+--------
+**value:** *0 or 1*
+
+**default:** *0*
+
+**context:** querystring
+
+Specifies whether allow `<style></style>`
+
 namespace
 --------
 **value:** *0、1 or 2*

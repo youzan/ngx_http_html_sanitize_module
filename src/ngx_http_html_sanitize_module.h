@@ -66,6 +66,8 @@ typedef struct {
     int waiting_more_body:1;
     int document:1;
     int html:1;
+    int script:1;
+    int style:1;
     int style_property_value:1;
     int url_protocol:1;
     int url_domain:1;
