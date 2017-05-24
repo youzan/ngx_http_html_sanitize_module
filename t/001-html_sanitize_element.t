@@ -97,7 +97,7 @@ location /t {
 
 
 
-=== TEST 6: unknow tag should be right in utf8
+=== TEST 6: unknown tag should be right in utf8
 --- config
 location /t {
     html_sanitize on;
