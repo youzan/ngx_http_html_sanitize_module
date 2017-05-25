@@ -2155,7 +2155,7 @@ ngx_http_html_sanitize_element_visit(ngx_http_request_t *r,
         return NGX_ERROR;
     }
 
-    dd("tagname: %.*s", (int) tagname.len, tagname.data);
+    dd("tagname: %d %.*s", (int) tagname.len, (int) tagname.len, tagname.data);
 
     if (tagname.len == 0) {
         return NGX_OK;
@@ -2232,9 +2232,9 @@ ngx_http_html_sanitize_element_visit(ngx_http_request_t *r,
         if (close_tag == NULL) {
             return NGX_ERROR;
         }
-        close_tag[2 + tagname.len + 1] = '\0';
-        ngx_snprintf((u_char *)close_tag, 2 + tagname.len + 1 + 1, "</%s>",
-                     tagname.data);
+
+        ngx_snprintf((u_char *)close_tag, 2 + tagname.len + 1 + 1, "</%V>",
+                     &tagname);
     }
 
     if (outputtag == 1) {
