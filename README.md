@@ -22,6 +22,8 @@
 [querystring]: #querystring
 [document]: #document
 [html]: #html
+[script]: #script
+[style]: #style
 [namespace]: #namespace
 [context]: #context
 [element]: #element
@@ -60,6 +62,8 @@ TOC
 * [Querystring](#querystring)
   * [document](#document)
   * [html](#html)
+  * [script](#script)
+  * [style](#style)
   * [namespace](#namespace)
   * [context](#context)
   * [element](#element)
