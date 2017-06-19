@@ -81,7 +81,7 @@ Status
 ======
 [![Build Status](https://travis-ci.org/youzan/ngx_http_html_sanitize_module.svg?branch=master)](https://travis-ci.org/youzan/ngx_http_html_sanitize_module)
 
-Now it's experimental and we are ready to run it on production-level environment to test the stability of [ngx_http_html_sanitize_module]
+Production Ready :-)
 
 
 Example
