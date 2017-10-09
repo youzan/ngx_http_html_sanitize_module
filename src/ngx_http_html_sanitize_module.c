@@ -2736,9 +2736,18 @@ ngx_http_html_sanitize_text_visit(ngx_http_request_t *r,
         value = (u_char *) node->v.text.text;
     }
 
+    /*
+     * Do not use text because of html entities
+     */
 
-    text.len = strlen((const char *)value);
-    text.data = value;
+    text.len = node->v.text.original_text.length;
+    text.data = (u_char *) node->v.text.original_text.data;
+
+    dd("tagname:%.*s-text:%.*s origintext-:%.*s", (int) tagname.len,
+        tagname.data,
+        (int) node->v.text.len, node->v.text.data,
+        (int) node->v.text.original_text.length,
+        node->v.text.original_text.data);
 
     ngx_http_html_sanitize_rtrim(&text);
 
