@@ -64,7 +64,7 @@ if test -n "$ngx_module_link"; then
     ngx_module_deps="$NGX_HTTP_HTML_SANITIZE_DEPS"
     ngx_module_srcs="$NGX_HTTP_HTML_SANITIZE_SRCS"
 
-    CFLAGS="$CFLAGS -std=gnu99 -g -O2 -fno-omit-frame-pointer"
+    CFLAGS="$CFLAGS -std=gnu99 -g -O2 -fno-omit-frame-pointer -Wno-implicit-fallthrough -Wno-misleading-indentation"
 
     . auto/module
 
@@ -74,5 +74,5 @@ else
     NGX_ADDON_DEPS="$NGX_HTTP_HTML_SANITIZE_DPES"
     CORE_INCS="$CORE_INCS $NGX_HTTP_HTML_SANITIZE_INCS"
 
-    CFLAGS="$CFLAGS -std=gnu99 -g -O2 -fno-omit-frame-pointer"
+    CFLAGS="$CFLAGS -std=gnu99 -g -O2 -fno-omit-frame-pointer -Wno-implicit-fallthrough -Wno-misleading-indentation"
 fi
